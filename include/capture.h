@@ -99,6 +99,140 @@
 /** @} version */
 
 //-----------------------------------------------------------------------------
+// [SECTION] Platform
+//-----------------------------------------------------------------------------
+
+/**
+ * @defgroup platform Platform Definitions
+ * @{
+ */
+
+#ifdef CAPTURE_PLATFORM_IS
+    #undef CAPTURE_PLATFORM_IS
+#endif // CAPTURE_PLATFORM_IS
+
+ /**
+ * @brief   Checks if the platform is of given brand.
+ * @param   name Platform, like `APPLE`.
+ * @retval  true   It is.
+ * @retval  false  It isn't.
+ */
+#define CAPTURE_PLATFORM_IS(name) CAPTURE_PLATFORM_##name
+
+//-----------------------------------------------------------------------------
+// [SECTION] Platform : Operating System 
+//-----------------------------------------------------------------------------
+
+/**
+ * @defgroup os Operating System Definitions
+ * @{
+ */
+
+#ifdef CAPTURE_OS_IS
+    #undef CAPTURE_OS_IS
+#endif // CAPTURE_OS_IS
+
+/**
+ * @brief   Checks if the os is of given brand.
+ * @param   name OS, like `MAC`.
+ * @retval  true   It is.
+ * @retval  false  It isn't.
+ */
+#define CAPTURE_OS_IS(name) CAPTURE_OS_##name
+
+ /** @} os */
+
+//-----------------------------------------------------------------------------
+// [SECTION] Platform : Architecture
+//-----------------------------------------------------------------------------
+
+/**
+ * @defgroup architecture Architecture Definitions
+ * @{
+ */
+
+#ifdef CAPTURE_ARCH_IS
+    #undef CAPTURE_ARCH_IS
+#endif // CAPTURE_ARCH_IS
+
+/**
+ * @brief   Checks if the target architecture is of given brand.
+ * @param   name Architecture, like `ARM64`.
+ * @retval  true   It is.
+ * @retval  false  It isn't.
+ */
+#define CAPTURE_ARCH_IS(name) CAPTURE_ARCH_##name
+
+ /** @} architecture */
+
+/** @} platform */
+
+//-----------------------------------------------------------------------------
+// [SECTION] Language C++ Standard
+//-----------------------------------------------------------------------------
+
+/**
+ * @defgroup language C++ Standard
+ * @{
+ */
+
+// 199711L - C++98
+// 201103L - C++11
+// 201402L - C++14
+// 201703L - C++17
+// 202002L - C++20
+// 202302L - C++23
+
+// With the MSVC compilers, the value of __cplusplus is by default always "199611L"(C++98).
+// To avoid that, the library instead references _MSVC_LANG which is always set a correct value.
+// See https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/ for more details.
+#if defined(_MSVC_LANG) && !defined(__clang__)
+    #define CAPTURE_CPLUSPLUS _MSVC_LANG
+#else
+    #define CAPTURE_CPLUSPLUS __cplusplus
+#endif
+
+#if !defined(CAPTURE_HAS_CXX_26) && !defined(CAPTURE_HAS_CXX_23) && !defined(CAPTURE_HAS_CXX_20)\
+    && !defined(CAPTURE_HAS_CXX_17) && !defined(CAPTURE_HAS_CXX_14) && !defined(CAPTURE_HAS_CXX_11)
+    #if (defined(CAPTURE_CPLUSPLUS) && CAPTURE_CPLUSPLUS > 202302L)
+        #define CAPTURE_HAS_CXX_26
+        #define CAPTURE_HAS_CXX_23
+        #define CAPTURE_HAS_CXX_20
+        #define CAPTURE_HAS_CXX_17
+        #define CAPTURE_HAS_CXX_14
+    #elif (defined(CAPTURE_CPLUSPLUS) && CAPTURE_CPLUSPLUS > 202002L)
+        #define CAPTURE_HAS_CXX_23
+        #define CAPTURE_HAS_CXX_20
+        #define CAPTURE_HAS_CXX_17
+        #define CAPTURE_HAS_CXX_14
+    #elif (defined(CAPTURE_CPLUSPLUS) && CAPTURE_CPLUSPLUS > 201703L)
+        #define CAPTURE_HAS_CXX_20
+        #define CAPTURE_HAS_CXX_17
+        #define CAPTURE_HAS_CXX_14
+    #elif (defined(CAPTURE_CPLUSPLUS) && CAPTURE_CPLUSPLUS > 201402L)
+        #define CAPTURE_HAS_CXX_17
+        #define CAPTURE_HAS_CXX_14
+    #elif (defined(CAPTURE_CPLUSPLUS) && CAPTURE_CPLUSPLUS > 201103L)
+        #define CAPTURE_HAS_CXX_14
+    #endif
+    // Always specified because it is the minimal required version
+    #define CAPTURE_HAS_CXX_11
+#endif
+
+ /** @} language */
+
+//-----------------------------------------------------------------------------
+// [SECTION] Language C Standard
+//-----------------------------------------------------------------------------
+
+/**
+ * @defgroup language C Standard
+ * @{
+ */
+
+ /** @} language */
+
+//-----------------------------------------------------------------------------
 // [SECTION] Compiler
 //-----------------------------------------------------------------------------
 
@@ -107,6 +241,10 @@
  * @{
  */
 
+#ifdef CAPTURE_COMPILER_IS
+    #undef CAPTURE_COMPILER_IS
+#endif // CAPTURE_COMPILER_IS
+
  /**
  * @brief   Checks if the compiler is of given brand.
  * @param   name  Compiler brand, like `MSVC`.
@@ -114,6 +252,10 @@
  * @retval  false  It isn't.
  */
 #define CAPTURE_COMPILER_IS(name) CAPTURE_COMPILER_##name
+
+#ifdef CAPTURE_COMPILER_SINCE
+    #undef CAPTURE_COMPILER_SINCE
+#endif // CAPTURE_COMPILER_SINCE
 
 /**
  * @brief   Checks if the compiler is of given brand and is newer than or equal
@@ -131,6 +273,10 @@
                                  ((CAPTURE_COMPILER_VERSION_MINOR > (y)) ||   \
                                   ((CAPTURE_COMPILER_VERSION_MINOR == (y)) && \
                                    (CAPTURE_COMPILER_VERSION_PATCH >= (z)))))))
+
+#ifdef CAPTURE_COMPILER_BEFORE
+    #undef CAPTURE_COMPILER_BEFORE
+#endif // CAPTURE_COMPILER_BEFORE
 
 /**
  * @brief   Checks if  the compiler  is of  given brand and  is older  than the
@@ -159,6 +305,22 @@
  * @{
  */
 
+#ifdef CAPTURE_COMPILER_VERSION_MAJOR
+    #undef CAPTURE_COMPILER_VERSION_MAJOR
+#endif // CAPTURE_COMPILER_VERSION_MAJOR
+
+#ifdef CAPTURE_COMPILER_VERSION_MINOR
+    #undef CAPTURE_COMPILER_VERSION_MINOR
+#endif // CAPTURE_COMPILER_VERSION_MINOR
+
+#ifdef CAPTURE_COMPILER_VERSION_PATCH
+    #undef CAPTURE_COMPILER_VERSION_PATCH
+#endif // CAPTURE_COMPILER_VERSION_PATCH
+
+#ifdef CAPTURE_COMPILER_IS_GCC
+    #undef CAPTURE_COMPILER_IS_GCC
+#endif // CAPTURE_COMPILER_IS_GCC
+
 /// Compiler is gcc
 #if !defined(__GNUC__)
     #define CAPTURE_COMPILER_GCC 0
@@ -168,6 +330,10 @@
     #define CAPTURE_COMPILER_VERSION_MINOR __GNUC_MINOR__
     #define CAPTURE_COMPILER_VERSION_PATCH __GNUC_PATCHLEVEL__
 #endif
+
+#ifdef CAPTURE_COMPILER_CLANG
+    #undef CAPTURE_COMPILER_CLANG
+#endif // CAPTURE_COMPILER_CLANG
 
 /// Compiler is clang
 #if !defined(__clang__)
@@ -181,7 +347,11 @@
     #define CAPTURE_COMPILER_VERSION_PATCH __clang_patchlevel__
 #endif
 
-/// Compiler is msc
+#ifdef CAPTURE_COMPILER_MSVC
+    #undef CAPTURE_COMPILER_MSVC
+#endif // CAPTURE_COMPILER_MSVC
+
+/// Compiler is msvc
 #if !defined(_MSC_VER)
     #define CAPTURE_COMPILER_MSVC 0
 #elif CAPTURE_COMPILER_IS(CLANG)
@@ -209,14 +379,14 @@
  /** @} compiler */
 
 //-----------------------------------------------------------------------------
-// [SECTION] Compiler Attributes
+// [SECTION] Compiler Warnings
 //-----------------------------------------------------------------------------
 
 /**
  * @defgroup compiler Compiler Warnings
  * @{
  */
- 
+
 #if CAPTURE_COMPILER_IS(GCC)
     #define CAPTURE_PRAGMA_TO_STR(x) _Pragma(#x)
     #define CAPTURE_GCC_SUPPRESS_WARNING_PUSH _Pragma("GCC diagnostic push")
@@ -288,6 +458,103 @@
  /** @} compiler */
 
 //-----------------------------------------------------------------------------
+// [SECTION] Compiler Macros
+//-----------------------------------------------------------------------------
+
+/**
+ * @defgroup compiler Compiler Macros
+ * @{
+ */
+
+#ifdef CAPTURE_HAS_BUILTIN
+    #undef CAPTURE_HAS_BUILTIN
+#endif // CAPTURE_HAS_BUILTIN
+
+/** compiler builtin check */
+#ifdef __has_builtin
+    #define CAPTURE_HAS_BUILTIN(x) __has_builtin(x)
+#else
+	#define CAPTURE_HAS_BUILTIN(x) 0
+#endif
+
+#ifdef CAPTURE_HAS_ATTRIBUTE
+    #undef CAPTURE_HAS_ATTRIBUTE
+#endif // CAPTURE_HAS_ATTRIBUTE
+
+/** compiler attribute check */
+#ifdef __has_attribute
+    #define CAPTURE_HAS_ATTRIBUTE(x) __has_attribute(x)
+#else
+    #define CAPTURE_HAS_ATTRIBUTE(x) 0
+#endif
+
+#ifdef CAPTURE_HAS_WARNING
+    #undef CAPTURE_HAS_WARNING
+#endif // CAPTURE_HAS_WARNING
+
+/** compiler attribute check */
+#ifdef __has_warning
+    #define CAPTURE_HAS_WARNING(x) __has_warning(x)
+#else
+    #define CAPTURE_HAS_WARNING(x) 0
+#endif
+
+#ifdef CAPTURE_HAS_FEATURE
+    #undef CAPTURE_HAS_FEATURE
+#endif // CAPTURE_HAS_FEATURE
+
+/** compiler feature check */
+#ifdef __has_feature
+    #define CAPTURE_HAS_FEATURE(x) __has_feature(x)
+#else
+    #define CAPTURE_HAS_FEATURE(x) 0
+#endif
+
+#ifdef CAPTURE_HAS_EXTENSION
+    #undef CAPTURE_HAS_EXTENSION
+#endif // CAPTURE_HAS_EXTENSION
+
+/** compiler extension check */
+#ifdef __has_extension
+    #define CAPTURE_HAS_EXTENSION(x) __has_extension(x)
+#else
+    #define CAPTURE_HAS_EXTENSION(x) 0
+#endif
+
+#ifdef CAPTURE_HAS_INCLUDE
+    #undef CAPTURE_HAS_INCLUDE
+#endif // CAPTURE_HAS_INCLUDE
+
+/** compiler include check */
+#ifdef __has_include
+    #define CAPTURE_HAS_INCLUDE(x) __has_include(x)
+#else
+    #define CAPTURE_HAS_INCLUDE(x) 0
+#endif
+
+#ifdef CAPTURE_HAS_CPP_ATTRIBUTE
+    #undef CAPTURE_HAS_CPP_ATTRIBUTE
+#endif // CAPTURE_HAS_CPP_ATTRIBUTE
+
+/** compiler cpp attribute check */
+#ifdef __has_cpp_attribute
+    #define CAPTURE_HAS_CPP_ATTRIBUTE(x) __has_cpp_attribute(x)
+#else
+    #define CAPTURE_HAS_CPP_ATTRIBUTE(x) 0
+#endif
+
+#ifdef CAPTURE_HAS_DECLSPEC_ATTRIBUTE
+    #undef CAPTURE_HAS_DECLSPEC_ATTRIBUTE
+#endif // CAPTURE_HAS_DECLSPEC_ATTRIBUTE
+
+/** compiler cpp attribute check */
+#ifdef __has_declspec_attribute
+    #define CAPTURE_HAS_DECLSPEC_ATTRIBUTE(x) __has_declspec_attribute(x)
+#else
+    #define CAPTURE_HAS_DECLSPEC_ATTRIBUTE(x) 0
+#endif
+
+//-----------------------------------------------------------------------------
 // [SECTION] Compiler Attributes
 //-----------------------------------------------------------------------------
 
@@ -295,51 +562,6 @@
  * @defgroup compiler Compiler Attributes
  * @{
  */
-
-/** compiler builtin check */
-#ifndef CAPTURE_HAS_BUILTIN
-	#ifdef __has_builtin
-    	#define CAPTURE_HAS_BUILTIN(x) __has_builtin(x)
-  	#else
-    	#define CAPTURE_HAS_BUILTIN(x) 0
-  	#endif
-#endif
-
-/** compiler attribute check */
-#ifndef CAPTURE_HAS_ATTRIBUTE
-  	#ifdef __has_attribute
-    	#define CAPTURE_HAS_ATTRIBUTE(x) __has_attribute(x)
-  	#else
-    	#define CAPTURE_HAS_ATTRIBUTE(x) 0
-  	#endif
-#endif
-
-/** compiler feature check */
-#ifndef CAPTURE_HAS_FEATURE
-  	#ifdef __has_feature
-    	#define CAPTURE_HAS_FEATURE(x) __has_feature(x)
-  	#else
-    	#define CAPTURE_HAS_FEATURE(x) 0
-  	#endif
-#endif
-
-/** compiler include check */
-#ifndef CAPTURE_HAS_INCLUDE
-  	#ifdef __has_include
-    	#define CAPTURE_HAS_INCLUDE(x) __has_include(x)
-  	#else
-    	#define CAPTURE_HAS_INCLUDE(x) 0
-  	#endif
-#endif
-
-/** compiler cpp attribute check */
-#ifndef CAPTURE_HAS_CPP_ATTRIBUTE
-  	#ifdef __has_cpp_attribute
-        #define CAPTURE_HAS_CPP_ATTRIBUTE(x) __has_cpp_attribute(x)
-  	#else
-    	#define CAPTURE_HAS_CPP_ATTRIBUTE(x) 0
-  	#endif
-#endif
 
 /** inline for compiler */
 #ifndef CAPTURE_INLINE
@@ -369,7 +591,7 @@
     	#define CAPTURE_ALIGN(x) __declspec(align(x))
   	#elif CAPTURE_HAS_ATTRIBUTE(aligned) || defined(__GNUC__)
     	#define CAPTURE_ALIGN(x) __attribute__((aligned(x)))
-  	#elif CAPTURE_CPP_VERSION >= 201103L
+  	#elif defined(CAPTURE_HAS_CXX_11)
     	#define CAPTURE_ALIGN(x) alignas(x)
   	#else
     	#define CAPTURE_ALIGN(x)
@@ -385,13 +607,6 @@
 
 #ifndef CAPTURE_NODISCARD
     #define CAPTURE_NODISCARD [[nodiscard]]
-#endif
-
-// switch usage of constexpr keyword depending on active C++ standard.
-#if defined(CAPTURE_HAS_CXX_17)
-    #define CAPTURE_CONSTEXPR constexpr
-#else
-    #define CAPTURE_CONSTEXPR
 #endif
 
 // switch usage of [[likely]] C++ attribute which has been available since C++20.
@@ -412,6 +627,13 @@
     #define CAPTURE_UNLIKELY(expr) (!!(expr))
 #endif
 
+// switch usage of constexpr keyword depending on active C++ standard.
+#if defined(CAPTURE_HAS_CXX_17)
+    #define CAPTURE_CONSTEXPR constexpr
+#else
+    #define CAPTURE_CONSTEXPR
+#endif
+
 // switch usage of char8_t which has been available since C++20.
 #if defined(CAPTURE_HAS_CXX_20) && defined(__cpp_char8_t) && __cpp_char8_t >= 201811L
     #define CAPTURE_HAS_CHAR8_T (1)
@@ -421,122 +643,7 @@
 
  /** @} compiler */
 
-//-----------------------------------------------------------------------------
-// [SECTION] Compiler Features
-//-----------------------------------------------------------------------------
-
-/**
- * @defgroup language C++ Standard
- * @{
- */
-
-// With the MSVC compilers, the value of __cplusplus is by default always "199611L"(C++98).
-// To avoid that, the library instead references _MSVC_LANG which is always set a correct value.
-// See https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/ for more details.
-#if defined(_MSVC_LANG) && !defined(__clang__)
-    #define CAPTURE_CPLUSPLUS _MSVC_LANG
-#else
-    #define CAPTURE_CPLUSPLUS __cplusplus
-#endif
-
-#if !defined(CAPTURE_HAS_CXX_26) && !defined(CAPTURE_HAS_CXX_23) && !defined(CAPTURE_HAS_CXX_20)\
-    && !defined(CAPTURE_HAS_CXX_17) && !defined(CAPTURE_HAS_CXX_14) && !defined(CAPTURE_HAS_CXX_11)
-    #if (defined(CAPTURE_CPLUSPLUS) && CAPTURE_CPLUSPLUS > 202302L)
-        #define CAPTURE_HAS_CXX_26
-        #define CAPTURE_HAS_CXX_23
-        #define CAPTURE_HAS_CXX_20
-        #define CAPTURE_HAS_CXX_17
-        #define CAPTURE_HAS_CXX_14
-    #elif (defined(CAPTURE_CPLUSPLUS) && CAPTURE_CPLUSPLUS > 202002L)
-        #define CAPTURE_HAS_CXX_23
-        #define CAPTURE_HAS_CXX_20
-        #define CAPTURE_HAS_CXX_17
-        #define CAPTURE_HAS_CXX_14
-    #elif (defined(CAPTURE_CPLUSPLUS) && CAPTURE_CPLUSPLUS > 201703L)
-        #define CAPTURE_HAS_CXX_20
-        #define CAPTURE_HAS_CXX_17
-        #define CAPTURE_HAS_CXX_14
-    #elif (defined(CAPTURE_CPLUSPLUS) && CAPTURE_CPLUSPLUS > 201402L)
-        #define CAPTURE_HAS_CXX_17
-        #define CAPTURE_HAS_CXX_14
-    #elif (defined(CAPTURE_CPLUSPLUS) && CAPTURE_CPLUSPLUS > 201103L)
-        #define CAPTURE_HAS_CXX_14
-    #endif
-    // Always specified because it is the minimal required version
-    #define CAPTURE_HAS_CXX_11
-#endif
-
- /** @} language */
-
-//-----------------------------------------------------------------------------
-// [SECTION] Compiler Attributes
-//-----------------------------------------------------------------------------
-
-/**
- * @defgroup language C Standard
- * @{
- */
-
- /** @} language */
-
  /** @} compiler */
-
-//-----------------------------------------------------------------------------
-// [SECTION] Platform
-//-----------------------------------------------------------------------------
-
-/**
- * @defgroup platform Platform Definitions
- * @{
- */
-
- /**
- * @brief   Checks if the platform is of given brand.
- * @param   name Platform, like `APPLE`.
- * @retval  true   It is.
- * @retval  false  It isn't.
- */
-#define CAPTURE_PLATFORM_IS(name) CAPTURE_PLATFORM_##name
-
-//-----------------------------------------------------------------------------
-// [SECTION] Platform : Operating System 
-//-----------------------------------------------------------------------------
-
-/**
- * @defgroup os Operating System Definitions
- * @{
- */
-
- /**
- * @brief   Checks if the os is of given brand.
- * @param   name OS, like `MAC`.
- * @retval  true   It is.
- * @retval  false  It isn't.
- */
-#define CAPTURE_OS_IS(name) CAPTURE_OS_##name
-
- /** @} os */
-
-//-----------------------------------------------------------------------------
-// [SECTION] Platform : Architecture
-//-----------------------------------------------------------------------------
-
-/**
- * @defgroup architecture Architecture Definitions
- * @{
- */
-
-/**
- * @brief   Checks if the target architecture is of given brand.
- * @param   name Architecture, like `ARM64`.
- * @retval  true   It is.
- * @retval  false  It isn't.
- */
-#define CAPTURE_ARCH_IS(name) CAPTURE_ARCH_##name
-
- /** @} architecture */
-
-/** @} platform */
 
 //-----------------------------------------------------------------------------
 // [SECTION] API Import/Export
